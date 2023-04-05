@@ -1,0 +1,4 @@
+# -- rotation -----
+rotation_prob: 0.4
+rotation_lb: 2
+rotation_ub: 30

@@ -1,6 +1,7 @@
-annotations_trainval2017/
+annotations_trainval2017.*
+val2017.*
 val2017/
-
+annotations/
 
 ### Python template
 # Byte-compiled / optimized / DLL files
