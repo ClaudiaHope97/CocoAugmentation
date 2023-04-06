@@ -7,7 +7,7 @@ import cv2
 import numpy as np
 import yaml
 
-from augementationTools import Rotator, VerticalShifter, NoiseAdder, HorizontalFlipper, VerticalFlipper, \
+from augmentationTools import Rotator, VerticalShifter, NoiseAdder, HorizontalFlipper, VerticalFlipper, \
     HorizontalShifter
 
 

@@ -1,12 +1,12 @@
 import numpy as np
 import cv2
-import math
 import random
 
 
 class BaseAugmentor:
     def modify(self, image, annotations: list):
         # modifies the image and all the related annotations accordingly
+        # returns the new image and annotations (as a modified copy of the original one)
         pass
 
     def crop_bbx(self, image_w: int, image_h: int, bbx: list):
@@ -19,8 +19,8 @@ class BaseAugmentor:
         if bbx[1] < 0:
             bbx[3] += bbx[1]
             bbx[1] = 0
-        bbx[2] = np.clip(bbx[2], 0, image_w - bbx[0])
-        bbx[3] = np.clip(bbx[3], 0, image_h - bbx[1])
+        bbx[2] = np.clip(bbx[2], 0, image_w - bbx[0]).astype(np.float64)
+        bbx[3] = np.clip(bbx[3], 0, image_h - bbx[1]).astype(np.float64)
         return bbx
 
     def check_annotations(self, annotation: dict):
@@ -67,11 +67,7 @@ class Rotator(BaseAugmentor):
             vec4 = np.matmul(M, np.array([bbx[0]+bbx[2], bbx[1]+bbx[3], 1], dtype=np.float64))  # bottom right corner transformed
             x_vals = [vec1[0], vec2[0], vec3[0], vec4[0]]
             y_vals = [vec1[1], vec2[1], vec3[1], vec4[1]]
-            x_min = math.ceil(np.min(x_vals))
-            x_max = math.floor(np.max(x_vals))
-            y_min = math.ceil(np.min(y_vals))
-            y_max = math.floor(np.max(y_vals))
-            bbx = [x_min, y_min, x_max-x_min, y_max-y_min]
+            bbx = [np.min(x_vals), np.min(y_vals), np.max(x_vals)-np.min(x_vals), np.max(y_vals)-np.min(y_vals)]
             new_annot['bbox'] = bbx
             rotated_annot.append(new_annot)
 

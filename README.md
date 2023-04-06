@@ -45,3 +45,6 @@ In particular, you can define the probability of a certain transformation to hap
 For example, if you never want to apply a specific transformation to your dataset you can set the corresponding probability to 0.
 Moreover, you can select the range or values specific to each type of transformation.\
 Please refer to the config file example for further details.
+
+### Visual testing
+You can also test the visual output of each transformation using the python test file *AugmentationToolsTest.py*, where you can define a specific image and run different tests related to different augmentations.
