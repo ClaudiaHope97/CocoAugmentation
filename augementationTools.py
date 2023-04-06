@@ -127,19 +127,58 @@ class VerticalShifter(BaseAugmentor):
         return image_shifted, annotations_shifted
 
 
-class VerticalShifter(BaseAugmentor):
+class NoiseAdder(BaseAugmentor):
 
-    def __init__(self, v_shift_ratio) -> None:
+    def __init__(self, noise_intensity) -> None:
         super().__init__()
-        if v_shift_ratio > 1 or v_shift_ratio < 0:
-            raise Exception("The shift ratio should be between 0 and 1")
-        self.v_shift_ratio = v_shift_ratio
+        if noise_intensity < 0:
+            raise Exception("The noise intensity should be bigger than 0")
+        self.noise_intensity = noise_intensity
+
+
+    def modify(self, image, annotations: list):
+        # Generate Gaussian noise
+        gaussian_noise = np.random.normal(0, 0.5, image.size)
+        gaussian_noise = gaussian_noise.reshape((image.shape[0], image.shape[1], 3)).astype('uint8')
+        # Add the Gaussian noise to the image
+        image_with_noise = cv2.add(image, gaussian_noise)
+
+        return image_with_noise, annotations
+
+
+class HorizontalFlipper(BaseAugmentor):
 
     def modify(self, image, annotations: list):
         h, w = image.shape[0], image.shape[1]
-        to_shift = w * random.uniform(-self.v_shift_ratio, self.v_shift_ratio)
-        M = np.matrix([[1, 0, 0], [0, 1, to_shift]], dtype=np.float64)
-        image_shifted = cv2.warpAffine(image, M, (w, h))
 
-        return image_shifted, annotations
+        # flip image
+        flipped_image = cv2.flip(image, 1)
+        # flip bbx
+        annotations_flipped = []
+        for annotation in annotations:
+            new_annot = annotation.copy()
+            bbx = new_annot['bbox']
+            new_annot['bbox'] = self.crop_bbx(w, h, [w-bbx[0]-bbx[2], bbx[1], bbx[2], bbx[3]])
+            if self.check_annotations(new_annot):
+                annotations_flipped.append(new_annot)
 
+        return flipped_image, annotations_flipped
+
+
+class VerticalFlipper(BaseAugmentor):
+
+    def modify(self, image, annotations: list):
+        h, w = image.shape[0], image.shape[1]
+
+        # flip image
+        flipped_image = cv2.flip(image, 0)
+        # flip bbx
+        annotations_flipped = []
+        for annotation in annotations:
+            new_annot = annotation.copy()
+            bbx = new_annot['bbox']
+            new_annot['bbox'] = self.crop_bbx(w, h, [bbx[0], h - bbx[1] - bbx[3], bbx[2], bbx[3]])
+            if self.check_annotations(new_annot):
+                annotations_flipped.append(new_annot)
+
+        return flipped_image, annotations_flipped

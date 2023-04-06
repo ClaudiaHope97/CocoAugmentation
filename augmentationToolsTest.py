@@ -2,7 +2,8 @@ import json
 import unittest
 import cv2
 
-from augementationTools import Rotator, HorizontalShifter, VerticalShifter
+from augementationTools import Rotator, HorizontalShifter, VerticalShifter, NoiseAdder, VerticalFlipper, \
+    HorizontalFlipper
 
 '''
 This is a test script to visualize the output of the different augmentation tools.
@@ -53,6 +54,21 @@ class AugmentationToolsTest(unittest.TestCase):
         shifter = VerticalShifter(0.2)
         shifted_im, shifted_annot = shifter.modify(self.image, self.annotations)
         self.show(modified_im=shifted_im, modified_annot=shifted_annot)
+
+    def test_noise(self):
+        color_changer = NoiseAdder(0.7)
+        changed_im, changed_annot = color_changer.modify(self.image, self.annotations)
+        self.show(modified_im=changed_im, modified_annot=changed_annot)
+
+    def test_h_flip(self):
+        flipper = HorizontalFlipper()
+        flipped_im, flipped_annot = flipper.modify(self.image, self.annotations)
+        self.show(modified_im=flipped_im, modified_annot=flipped_annot)
+
+    def test_v_flip(self):
+        flipper = VerticalFlipper()
+        flipped_im, flipped_annot = flipper.modify(self.image, self.annotations)
+        self.show(modified_im=flipped_im, modified_annot=flipped_annot)
 
 
 if __name__ == '__main__':
