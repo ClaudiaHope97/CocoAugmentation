@@ -28,11 +28,12 @@ class BaseAugmentor:
         return annotation['bbox'][2] > 0 and annotation['bbox'][3] > 0
 
 
-
 class Rotator(BaseAugmentor):
 
     def __init__(self, rot_min, rot_max) -> None:
         super().__init__()
+        if rot_max < rot_min:
+            raise Exception("Maximum rotation should be higher than the minimum one")
         self.rot_max = rot_max
         self.rot_min = rot_min
 
@@ -134,7 +135,6 @@ class NoiseAdder(BaseAugmentor):
         if noise_intensity < 0:
             raise Exception("The noise intensity should be bigger than 0")
         self.noise_intensity = noise_intensity
-
 
     def modify(self, image, annotations: list):
         # Generate Gaussian noise

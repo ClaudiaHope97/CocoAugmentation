@@ -1,4 +1,18 @@
 # -- rotation -----
-rotation_prob: 0.4
-rotation_lb: 2
-rotation_ub: 30
+rotation_prob: 0.4  # rotation probability
+rotation_lb: -30  # rotation lower bound - range (-180, 180)
+rotation_ub: 30  # rotation upper bound - range (-180, 180)
+
+# -- shift -----
+v_shift_prob: 0.4  # vertical shift probability
+v_shift_ratio: 0.1  # max vertical shift ratio (is multiplied by the image height to define the shift in pixels) -  range (0, 1)
+h_shift_prob: 0.4  # horizontal shift probability
+h_shift_ratio: 0.12  # max horizontal shift ratio (is multiplied by the image width to define the shift in pixels) - range (0, 1)
+
+# -- gaussian noise ----
+noise_prob: 0.3  # gaussian noise probability
+noise_intensity: 0.7  # max noise intensity defined as the standard deviation of a gaussian distribution with 0 mean - suggested range (0, 1)
+
+# -- flip ----
+h_flip_prob: 0.2  # horizontal flip probability
+v_flip_prob: 0.3  # vertical shift probability
